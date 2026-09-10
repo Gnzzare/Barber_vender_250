@@ -1,0 +1,10 @@
+{
+  "description": "Streamline barbershop bookings with a sleek customer interface and powerful admin dashboard for managing appointments, staff, and services efficiently.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
