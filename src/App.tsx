@@ -90,28 +90,32 @@ export default function App() {
     return <Booking onBack={() => setView("landing")} />;
   }
 
+    // Mostrar el atajo de demo solo en desarrollo local
+  const esLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
   return (
     <div className="relative">
       <Landing onBook={() => setView("booking")} />
-      {/* Demo nav */}
-      <div className="fixed bottom-5 right-5 z-50">
-        <div className="rounded border p-3 space-y-2"
-             style={{ backgroundColor: "rgba(19,17,13,0.95)", borderColor: "#302A22", backdropFilter: "blur(16px)", boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}>
-          <p className="font-mono text-[9px] tracking-widest opacity-30 text-center" style={{ color: "#EDE4D3" }}>
-            VER PANTALLAS
-          </p>
-          <button onClick={() => setView("booking")}
-                  className="w-full px-4 py-2.5 rounded font-mono text-xs tracking-wider text-left flex items-center gap-2 hover:bg-[#1C1914] transition-colors"
-                  style={{ color: "#C9552A" }}>
-            ◆ Flujo reserva
-          </button>
-          <button onClick={() => setView("admin-login")}
-                  className="w-full px-4 py-2.5 rounded font-mono text-xs tracking-wider text-left flex items-center gap-2 hover:bg-[#1C1914] transition-colors"
-                  style={{ color: "#8A7F6D" }}>
-            ◆ Panel admin
-          </button>
+      {esLocal && (
+        <div className="fixed bottom-5 right-5 z-50">
+          <div className="rounded border p-3 space-y-2"
+               style={{ backgroundColor: "rgba(19,17,13,0.95)", borderColor: "#302A22", backdropFilter: "blur(16px)", boxShadow: "0 8px 40px rgba(0,0,0,0.5)" }}>
+            <p className="font-mono text-[9px] tracking-widest opacity-30 text-center" style={{ color: "#EDE4D3" }}>
+              VER PANTALLAS (solo local)
+            </p>
+            <button onClick={() => setView("booking")}
+                    className="w-full px-4 py-2.5 rounded font-mono text-xs tracking-wider text-left flex items-center gap-2 hover:bg-[#1C1914] transition-colors"
+                    style={{ color: "#C9552A" }}>
+              ◆ Flujo reserva
+            </button>
+            <button onClick={() => setView("admin-login")}
+                    className="w-full px-4 py-2.5 rounded font-mono text-xs tracking-wider text-left flex items-center gap-2 hover:bg-[#1C1914] transition-colors"
+                    style={{ color: "#8A7F6D" }}>
+              ◆ Panel admin
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

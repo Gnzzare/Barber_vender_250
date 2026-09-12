@@ -696,3 +696,56 @@ export function formatearTelefonoVisual(telefonoE164: string): string {
   const partes = numero.match(/.{1,4}/g) ?? [numero];
   return `+${pais.code} ${partes.join(" ")}`;
 }
+// ============================================
+// STORAGE — Subida de archivos
+// ============================================
+
+/**
+ * Sube una foto de barbero al bucket "barberos" y devuelve la URL pública.
+ */
+export async function subirFotoBarbero(file: File, prefijo?: string): Promise<string> {
+  // Validar tamaño (5MB máx)
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("La imagen no puede pesar más de 5 MB");
+  }
+
+  // Validar tipo
+  const tiposPermitidos = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+  if (!tiposPermitidos.includes(file.type)) {
+    throw new Error("Formato no soportado. Usa PNG, JPG o WEBP.");
+  }
+
+  // Nombre único: prefijo-timestamp.ext
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const nombreArchivo = `${prefijo ?? "barbero"}-${Date.now()}.${ext}`;
+
+  // Subir
+  const { error: uploadError } = await supabase.storage
+    .from("barberos")
+    .upload(nombreArchivo, file, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (uploadError) throw uploadError;
+
+  // Obtener URL pública
+  const { data } = supabase.storage.from("barberos").getPublicUrl(nombreArchivo);
+  return data.publicUrl;
+}
+
+/**
+ * Elimina una foto del bucket. Se llama cuando se cambia la foto.
+ */
+export async function eliminarFotoBarbero(url: string): Promise<void> {
+  // Extraer el nombre del archivo desde la URL
+  const partes = url.split("/barberos/");
+  if (partes.length < 2) return;
+  const nombreArchivo = partes[1];
+
+  const { error } = await supabase.storage.from("barberos").remove([nombreArchivo]);
+  if (error) {
+    console.warn("No se pudo eliminar la foto:", error.message);
+    // No tiramos error porque no es crítico
+  }
+}
